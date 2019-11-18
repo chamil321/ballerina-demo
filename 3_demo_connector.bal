@@ -19,9 +19,10 @@ service hello on new http:Listener(9090) {
         path: "/",
         methods: ["POST"]
     }
-    resource function hi (http:Caller caller, http:Request request) {
-        string payload = checkpanic request.getTextPayload();
-        twitter:Status st = checkpanic tw->tweet(payload);
-        checkpanic caller->respond("Tweeted: " + untaint st.text);
+    resource function hi (http:Caller caller, http:Request request) 
+                                                        returns error? {
+        string payload = check request.getTextPayload();
+        twitter:Status st = check tw->tweet(payload);
+        checkpanic caller->respond("Tweeted: " + <@untainted> st.text);
     }
 }

@@ -17,7 +17,8 @@ service hello on new http:Listener(9090) {
         path: "/",
         methods: ["POST"]
     }
-    resource function hi (http:Caller caller, http:Request request) {
+    resource function hi (http:Caller caller, http:Request request) 
+                                                        returns error? {
         string payload = checkpanic request.getTextPayload();
         payload = payload + " #ballerina";
 
@@ -28,6 +29,6 @@ service hello on new http:Listener(9090) {
             agent: "ballerina"
         };
 
-        checkpanic caller->respond(untaint respJson);
+        checkpanic caller->respond(<@untainted> respJson);
     }
 }

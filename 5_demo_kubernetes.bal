@@ -1,7 +1,7 @@
 import ballerina/config;
 import ballerina/http;
 import wso2/twitter;
-import ballerinax/kubernetes;
+import ballerina/kubernetes;
 
 twitter:Client tw = new({
     clientId: config:getAsString("clientId"),
@@ -22,7 +22,7 @@ listener http:Listener cmdListener = new(9090);
     image: "demo/ballerina-demo",
     name: "ballerina-demo"
 }
-@kubernetes:ConfigMap{ conf: "twitter.toml" }
+@kubernetes:ConfigMap{ conf: "ballerina.conf" }
 @http:ServiceConfig { basePath: "/" }
 service hello on cmdListener {
 
@@ -30,9 +30,10 @@ service hello on cmdListener {
         path: "/", 
         methods: ["POST"]
     }
-    resource function hi (http:Caller caller, http:Request request) {
-        string payload = checkpanic request.getTextPayload();
-        twitter:Status st = checkpanic tw->tweet(payload);
-        checkpanic caller->respond("Tweeted: " + untaint st.text);
+    resource function hi (http:Caller caller, http:Request request) 
+                                                        returns error? {
+        string payload = check request.getTextPayload();
+        twitter:Status st = check tw->tweet(payload);
+        checkpanic caller->respond("Tweeted: " + <@untainted> st.text);
     }
 }
