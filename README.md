@@ -16,7 +16,7 @@ Target audience: technical: meetups, technical customers/partners - this is a de
 
 Get the latest download from [ballerina.io](http://ballerina.io)
 
-Currently tested on 0.990.0
+Currently tested on 1.0.3
 
 Add Ballerina **bin** folder to your $PATH
 
@@ -24,7 +24,7 @@ Check it by opening the terminal window and running:
 
 ```
 $ ballerina version
-Ballerina 0.990.0
+Ballerina 1.0.3
 ```
 
 ## VS Code
