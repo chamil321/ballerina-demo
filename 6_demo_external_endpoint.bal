@@ -19,19 +19,20 @@ service hello on new http:Listener(9090) {
         path: "/",
         methods: ["POST"]
     }
-    resource function hi (http:Caller caller, http:Request request) {
+    resource function hi (http:Caller caller, http:Request request) 
+                                                    returns error? {
 
-        var hResp = checkpanic homer->get("/quote");
-        var status = checkpanic hResp.getTextPayload();
+        var hResp = check homer->get("/quote");
+        var status = check hResp.getTextPayload();
         status = status + " #ballerina";
 
-        twitter:Status st = checkpanic tw->tweet(status);
+        twitter:Status st = check tw->tweet(status);
         json myJson = {
             text: status,
             id: st.id,
             agent: "ballerina"
         };
 
-        checkpanic caller->respond(untaint myJson);
+        checkpanic caller->respond(<@untainted> myJson);
     }
 }
