@@ -1,5 +1,6 @@
 import ballerina/config;
 import ballerina/http;
+import ballerina/log;
 import wso2/twitter;
 
 http:Client homer = new("https://thesimpsonsquoteapi.glitch.me", {
@@ -45,6 +46,9 @@ service hello on new http:Listener(9090) {
             resp = "Circuit is open. Invoking default behavior.\n";
         }
 
-        checkpanic caller->respond(<@untainted> resp);
+        var result = caller->respond(<@untainted> resp);
+        if (result is error) {
+            log:printError("Error sending response", err = result);
+        }
     }
 }

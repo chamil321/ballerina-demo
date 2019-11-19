@@ -1,5 +1,6 @@
 import ballerina/config;
 import ballerina/http;
+import ballerina/log;
 import wso2/twitter;
 import ballerina/kubernetes;
 
@@ -34,6 +35,9 @@ service hello on cmdListener {
                                                         returns error? {
         string payload = check request.getTextPayload();
         twitter:Status st = check tw->tweet(payload);
-        checkpanic caller->respond("Tweeted: " + <@untainted> st.text);
+        var result = caller->respond("Tweeted: " + <@untainted> st.text);
+        if (result is error) {
+            log:printError("Error sending response", err = result);
+        }
     }
 }

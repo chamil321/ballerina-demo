@@ -1,5 +1,6 @@
 import ballerina/config;
 import ballerina/http;
+import ballerina/log;
 import wso2/twitter;
 
 http:Client homer = new("https://thesimpsonsquoteapi.glitch.me");
@@ -33,6 +34,9 @@ service hello on new http:Listener(9090) {
             agent: "ballerina"
         };
 
-        checkpanic caller->respond(<@untainted> myJson);
+        var result = caller->respond(<@untainted> myJson);
+        if (result is error) {
+            log:printError("Error sending response", err = result);
+        }
     }
 }

@@ -1,4 +1,5 @@
 import ballerina/http;
+import ballerina/log;
 
 @http:ServiceConfig { basePath: "/" }
 service hello on new http:Listener(9090) {
@@ -10,6 +11,9 @@ service hello on new http:Listener(9090) {
     resource function hi (http:Caller caller, http:Request req) 
                                                     returns error? {
         var payload = check req.getTextPayload();
-        checkpanic caller -> respond("Hello " + <@untainted> payload + "!\n");
+        var result = caller -> respond("Hello " + <@untainted> payload + "!\n");
+        if (result is error) {
+            log:printError("Error sending response", err = result);
+        }
     }
 }

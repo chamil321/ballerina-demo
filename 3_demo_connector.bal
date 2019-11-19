@@ -1,5 +1,6 @@
 import ballerina/config;
 import ballerina/http;
+import ballerina/log;
 import wso2/twitter;
 
 twitter:Client tw = new({
@@ -23,6 +24,9 @@ service hello on new http:Listener(9090) {
                                                         returns error? {
         string payload = check request.getTextPayload();
         twitter:Status st = check tw->tweet(payload);
-        checkpanic caller->respond("Tweeted: " + <@untainted> st.text);
+        var result = caller->respond("Tweeted: " + <@untainted> st.text);
+        if (result is error) {
+            log:printError("Error sending response", err = result);
+        }
     }
 }

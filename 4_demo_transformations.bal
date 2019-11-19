@@ -1,5 +1,6 @@
 import ballerina/config;
 import ballerina/http;
+import ballerina/log;
 import wso2/twitter;
 
 twitter:Client tw = new({
@@ -19,16 +20,19 @@ service hello on new http:Listener(9090) {
     }
     resource function hi (http:Caller caller, http:Request request) 
                                                         returns error? {
-        string payload = checkpanic request.getTextPayload();
+        string payload = check request.getTextPayload();
         payload = payload + " #ballerina";
 
-        twitter:Status st = checkpanic tw->tweet(payload);
+        twitter:Status st = check tw->tweet(payload);
         json respJson = {
             text: payload,
             id: st.id,
             agent: "ballerina"
         };
 
-        checkpanic caller->respond(<@untainted> respJson);
+        var result = caller->respond(<@untainted> respJson);
+        if (result is error) {
+            log:printError("Error sending response", err = result);
+        }
     }
 }

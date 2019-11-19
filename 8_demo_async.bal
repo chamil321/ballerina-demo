@@ -24,7 +24,10 @@ service hello on new http:Listener(9090) {
         _ = start doTweet();
         http:Response res = new;
         res.setPayload("Async call\n");
-        checkpanic caller->respond(res);
+        var result = caller->respond(res);
+        if (result is error) {
+            log:printError("Error sending response", err = result);
+        }
     }
 }
 
