@@ -37,7 +37,7 @@ service hello on cmdListener {
         twitter:Status st = check tw->tweet(payload);
         var result = caller->respond("Tweeted: " + <@untainted> st.text);
         if (result is error) {
-            log:printError("Error sending response", err = result);
+            log:printError("Error sending response", result);
         }
     }
 }

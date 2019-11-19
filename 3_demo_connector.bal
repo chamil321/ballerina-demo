@@ -26,7 +26,7 @@ service hello on new http:Listener(9090) {
         twitter:Status st = check tw->tweet(payload);
         var result = caller->respond("Tweeted: " + <@untainted> st.text);
         if (result is error) {
-            log:printError("Error sending response", err = result);
+            log:printError("Error sending response", result);
         }
     }
 }

@@ -13,7 +13,7 @@ service hello on new http:Listener(9090) {
         var payload = check req.getTextPayload();
         var result = caller -> respond("Hello " + <@untainted> payload + "!\n");
         if (result is error) {
-            log:printError("Error sending response", err = result);
+            log:printError("Error sending response", result);
         }
     }
 }
